@@ -1,0 +1,46 @@
+BU;BUNAME;COMPANYNAME;PROCCESSTYPE;FIELDNAME;FIELDKEY;FIELDVALUE;FIELDVALUE2;DELETEFLAG;STATUS
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7310;Industrial Production and Manufacturing Services;Plastic and chemical industries;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7312;Industrial Production and Manufacturing Services;Metal and mineral industries;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7311;Industrial Production and Manufacturing Services;Wood and paper industries;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7313;Industrial Production and Manufacturing Services;Food and beverage industries;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7316;Industrial Production and Manufacturing Services;Machinery and transport equipment manufacture;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7315;Industrial Production and Manufacturing Services;Manufacturing support services;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7314;Industrial Production and Manufacturing Services;Fibers and textiles and fabric industries;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7318;Industrial Production and Manufacturing Services;Machining and processing services;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7317;Industrial Production and Manufacturing Services;Manufacture of electrical goods and precision instruments;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7111;Mining and oil and gas services;Oil and gas exploration services;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7110;Mining and oil and gas services;Mining services;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7112;Mining and oil and gas services;Well drilling and construction services;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7113;Mining and oil and gas services;Oil and gas extraction and production enhancement services;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7114;Mining and oil and gas services;Oil and gas restoration and reclamation services;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7115;Mining and oil and gas services;Oil and gas data management and processing services;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;7116;Mining and oil and gas services;Oil and gas well project management services;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;8111;Engineering and Research and Technology Based Services;Computer services;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;8110;Engineering and Research and Technology Based Services;Professional engineering services;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;8113;Engineering and Research and Technology Based Services;Statistics;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;8112;Engineering and Research and Technology Based Services;Economics;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;8114;Engineering and Research and Technology Based Services;Manufacturing technologies;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;8116;Engineering and Research and Technology Based Services;Information Technology Service Delivery;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;8115;Engineering and Research and Technology Based Services;Earth science services;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3010;Structures and Building and Construction and Manufacturing Components and Supplies;Structural materials and basic shapes;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3013;Structures and Building and Construction and Manufacturing Components and Supplies;Structural building products;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3012;Structures and Building and Construction and Manufacturing Components and Supplies;Roads and landscape;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3015;Structures and Building and Construction and Manufacturing Components and Supplies;Exterior finishing materials;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3011;Structures and Building and Construction and Manufacturing Components and Supplies;Concrete and cement and plaster;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3014;Structures and Building and Construction and Manufacturing Components and Supplies;Insulation;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3017;Structures and Building and Construction and Manufacturing Components and Supplies;Doors and windows and glass;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3016;Structures and Building and Construction and Manufacturing Components and Supplies;Interior finishing materials;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3019;Structures and Building and Construction and Manufacturing Components and Supplies;Construction and maintenance support equipment;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3018;Structures and Building and Construction and Manufacturing Components and Supplies;Plumbing fixtures;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3020;Structures and Building and Construction and Manufacturing Components and Supplies;Prefabricated structures;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3022;Structures and Building and Construction and Manufacturing Components and Supplies;Permanent structures;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3023;Structures and Building and Construction and Manufacturing Components and Supplies;Portable Structures;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3024;Structures and Building and Construction and Manufacturing Components and Supplies;Portable Structure Building Components;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;3010;Structures and Building and Construction and Manufacturing Components and Supplies;Market Research;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;1214;Chemicals including Bio Chemicals and Gas Materials;Elements and gases;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;1213;Chemicals including Bio Chemicals and Gas Materials;Explosive materials;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;1216;Chemicals including Bio Chemicals and Gas Materials;Additives;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;1217;Chemicals including Bio Chemicals and Gas Materials;Colorants;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;1235;Chemicals including Bio Chemicals and Gas Materials;Compounds and mixtures;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;1219;Chemicals including Bio Chemicals and Gas Materials;Solvents;false;x
+SAP;SAP;LTIMINDTREE;PQQ;Item Category;1218;Chemicals including Bio Chemicals and Gas Materials;Waxes and oils;false;x

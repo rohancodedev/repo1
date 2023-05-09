@@ -1,0 +1,33 @@
+# CAP capm-vendor-buyer
+_out
+*.db
+*.sqlite
+package-lock.json
+connection.properties
+default-*.json
+Makefile_*.mta
+.cdsrc-private.json
+gen/
+node_modules/
+target/
+
+# Web IDE, App Studio
+.che/
+.gen/
+
+# MTA
+*_mta_build_tmp
+*.mtar
+mta_archives/
+
+# Other
+.DS_Store
+*.orig
+*.log
+
+*.iml
+*.flattened-pom.xml
+
+# IDEs
+# .vscode
+# .idea

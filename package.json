@@ -1,0 +1,66 @@
+{
+  "name": "capm-vendor-buyer",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^6",
+    "express": "^4",
+    "hdb": "^0.19.5",
+    "passport": "^0.6.0",
+    "@sap/xsenv": "^3.4.0",
+    "@sap/xssec": "^3.2.17",
+    "sap-cf-axios": "^0.4.8",
+    "axios":"^1.4.0",
+    "uuidv4": "^6.2.4",
+    "lodash": "^4.17.21",
+    "querystring": "^0.2.1",
+    "qs":"^6.11.1"
+  },
+  "devDependencies": {
+    "@sap/hdi-deploy": "^4.6.0"
+  },
+  "scripts": {
+    "start": "npx cds run"
+  },
+  "engines": {
+    "node": "^14.x"
+  },
+  "cds": {
+    "build": {
+      "tasks": [
+        {
+          "for": "hana",
+          "dest": "db"
+        },
+        {
+          "for": "node-cf"
+        }
+      ]
+    },
+    "requires": {
+      "uaa": {
+        "kind": "xsuaa"
+      },
+      "db": {
+        "kind": "hana",
+        "model": [
+          "db",
+          "srv"
+        ]
+      },
+      "auth": {
+        "kind": "xsuaa",
+        "restrict_all_services": false
+      }
+    },
+    "hana": {
+      "deploy-format": "hdbtable"
+    },
+    "odata": {
+      "version": "v4"
+    }
+  }
+}

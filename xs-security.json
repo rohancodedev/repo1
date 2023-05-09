@@ -1,0 +1,54 @@
+{
+    "xsappname": "capm-vendor-buyer",
+    "tenant-mode": "dedicated",
+    "description": "Security profile of called application",
+    "scopes": [
+        {
+            "name": "$XSAPPNAME.user",
+            "description": "CAPM Vendor Buyer User Scope"
+        },
+        {
+            "name": "$XSAPPNAME.admin",
+            "description": "CAPM Vendor Buyer Administrator Scope"
+        }
+    ],
+    "role-templates": [
+        {
+            "name": "CAPM-Vendor-Buyer-User-RoleTemplate",
+            "description": "CAPM Vendor Buyer User RoleTemplate",
+            "scope-references": [
+              "$XSAPPNAME.user"
+            ]
+          },
+          {
+            "name": "CAPM-Vendor-Buyer-Admin-RoleTemplate",
+            "description": "CAPM Vendor Buyer Admin RoleTemplate",
+            "scope-references": [
+              "$XSAPPNAME.user",
+              "$XSAPPNAME.admin"
+            ]
+          }
+    ],
+    "role-collections": [
+        {
+          "name": "CAPM-Vendor-Buyer-Admin-RoleCollection",
+          "description": "CAPM Vendor Buyer Admin RoleCollection",
+          "role-template-references": [
+            "$XSAPPNAME.CAPM-Vendor-Buyer-User-RoleTemplate",
+            "$XSAPPNAME.CAPM-Vendor-Buyer-Admin-RoleTemplate"
+          ]
+        },
+        {
+          "name": "CAPM-Vendor-Buyer-User-RoleCollection",
+          "description": "CAPM Vendor Buyer User RoleCollection",
+          "role-template-references": [
+            "$XSAPPNAME.CAPM-Vendor-Buyer-User-RoleTemplate"
+          ]
+        }
+      ],    
+    "oauth2-configuration": {
+        "redirect-uris": [
+            "https://*.hana.ondemand.com/**"
+        ]
+    }
+}

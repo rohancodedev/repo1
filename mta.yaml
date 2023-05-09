@@ -1,0 +1,106 @@
+---
+_schema-version: '3.1'
+ID: capm-vendor-buyer
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx -p @sap/cds-dk cds build --production
+modules:
+  - name: capm-vendor-buyer-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      app-name: capm-vendor-buyer
+      buildpack: nodejs_buildpack
+      disk-quota: 256M
+      memory: 256M
+      routes:
+        - route: ${space}-capm-vendor-buyer.${default-domain}
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires: 
+      - name: capm-vendor-buyer-db-hdi-container
+      - name: capm-vendor-buyer-uaa
+      - name: capm-vendor-buyer-dest
+      - name: capm-vendor-buyer-conn
+      - name: default-workflow
+
+  - name: capm-vendor-buyer-db-deployer
+    type: hdb
+    path: gen/db
+    build-parameters:
+      ignore: ["node_modules/"]    
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+      buildpack: nodejs_buildpack
+      app-name: capm-vendor-buyer-db-deployer
+      routes:
+        - route: ${space}-capm-vendor-buyer-db-deployer.${default-domain}      
+    requires:
+      - name: capm-vendor-buyer-uaa
+      - name: capm-vendor-buyer-db-hdi-container
+        # properties:
+        # TARGET_CONTAINER: ~{container-name}
+
+resources:
+  - name: capm-vendor-buyer-db-hdi-container
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+      service-name: capm-vendor-buyer-hdi-container-service
+      service-keys:
+        - name: capm-vendor-buyer-hdi-container-service-key      
+    properties:
+     container-name: ${service-name}
+     hdi-service-name: ${service-name}
+
+  - name: capm-vendor-buyer-dest
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: lite
+      service: destination
+      service-name: capm-vendor-buyer-dest-service
+      service-keys:
+        - name: capm-vendor-buyer-dest-service-key      
+
+  - name: capm-vendor-buyer-conn
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: lite
+      service: connectivity
+      service-name: capm-vendor-buyer-conn-service
+      service-keys:
+        - name: capm-vendor-buyer-conn-service-key    
+
+  - name: capm-vendor-buyer-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-plan: application
+      service-name: capm-vendor-buyer-uaa-service
+      service-keys:
+        - name: capm-vendor-buyer-uaa-service-key
+      config:
+        xsappname: capm-vendor-buyer-${space}    #  name + space dependency
+        tenant-mode: dedicated
+
+  - name: default-workflow
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: workflow
+      service-keys:
+        - name: capm-vendor-buyer-workflow-service-key
+      service-plan: standard  
