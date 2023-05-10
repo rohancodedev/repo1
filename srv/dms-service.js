@@ -1,3 +1,4 @@
+const cds = require("@sap/cds");
 const axios = require('axios');
 const querystring = require('querystring');
 
@@ -12,6 +13,23 @@ const oVCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES),
 
 module.exports = async function (srv) {
 
+    srv.on("createFolder", async (req) => {
+        if (!req.data.folderName) {
+            return {
+                "userResponse": "No folderName provided"
+            }
+        }
+
+        var folderName = req.data["folderName"],
+            token = await getOAuthToken(),
+            userResponse = await createFolder(folderName, token);
+
+        return {
+            "userResponse": userResponse
+        };
+
+    });
+
     srv.on("getRepositories", async (req) => {
         var token = await getOAuthToken(),
             userResponse = await getRepo(token);
@@ -19,6 +37,39 @@ module.exports = async function (srv) {
         return {
             "userResponse": userResponse
         };
+    });
+
+
+    srv.on("checkRepository", async (req) => {
+        var repoName = req.data.repoName,
+            token = await getOAuthToken(),
+            response = await getRepo(token),
+            repo = null;
+
+        for (var key in response) {
+            var oValue = response[key];
+            for (var key1 in oValue) {
+                if ((key1 === "repositoryName") && (oValue[key1] === repoName)) {
+                    repo = oValue;
+                    break;
+                }
+            }
+
+        }
+
+        if (repo === null) {
+            return {
+                "isRepoFound": false,
+                "repoName": repoName,
+                "userResponse": "Repository ( " + repoName + " ) Not Found"
+            }
+        } else {
+            return {
+                "isRepoFound": true,
+                "repoName": repoName,
+                "userResponse": repo
+            }
+        }
     });
 
     srv.on("createRepository", async (req) => {
@@ -69,6 +120,24 @@ async function getRepo(token) {
 async function createRepo(inputData, token) {
     var data = JSON.stringify(inputData),
         urlString = sdmURL + createRepoEndpoint,
+        config = {
+            "method": "post",
+            "url": urlString,
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token.access_token
+            },
+            "data": data
+        };
+
+    console.log("<========== DMS-Service createRepo config ==========>  ::   " + JSON.stringify(config));
+
+    var response = await axios(config);
+    return response.data;
+}
+
+async function createFolder(folderName, token) {
+    var urlString = sdmURL + createRepoEndpoint,
         config = {
             "method": "post",
             "url": urlString,
