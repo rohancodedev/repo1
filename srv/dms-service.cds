@@ -4,18 +4,28 @@ service dmsService @(impl: './dms-service.js') {
     @open
     type object {};
 
-    action   createRepository(input : object)  returns object;
-    function getRepositories()                 returns object;
-    action   createFolder(folderName : String) returns object;
-    function checkRepository (repoName : String) returns object;
+    action   createRepository(input : object)                                returns object;
+    action   createFolderInRepository(input : object)                        returns object;
+    function getRepositories()                                               returns object;
+    function checkRepository(repoName : String)                              returns object;
+    function checkFolderInRepository(repoName : String, folderName : String) returns object;
 }
+
+/* Test Data for createFolderInRepository */
+// {
+//     "input" : {
+//         "repoName":"Test DMS009",
+//         "folderName":"abcd"
+//     }
+// }
+/* Test Data for createFolderInRepository */
 
 /* Test Data for checkRepository */
 // https://crossindustry-capm-vendor-buyer.cfapps.eu10.hana.ondemand.com/dmsRestService/checkRepository (repoName='Test DMS009')
 /* Test Data for checkRepository */
 
 
-/* Test Data for CreateRepository */
+/* Test Data for createRepository */
 // {
 //     "input": {
 //         "repository": {
@@ -29,4 +39,4 @@ service dmsService @(impl: './dms-service.js') {
 //         }
 //     }
 // }
-/* Test Data for CreateRepository */
+/* Test Data for createRepository */
