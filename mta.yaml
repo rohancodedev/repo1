@@ -34,6 +34,8 @@ modules:
       - name: capm-vendor-buyer-dest
       - name: capm-vendor-buyer-conn
       - name: default-workflow
+      - name: default-dms
+    #  - name: hdm_dms
 
   - name: capm-vendor-buyer-db-deployer
     type: hdb
@@ -104,3 +106,11 @@ resources:
       service-keys:
         - name: capm-vendor-buyer-workflow-service-key
       service-plan: standard  
+
+  - name: default-dms
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: sdm
+      service-plan: standard
+      service-keys:
+        - name: capm-vendor-buyer-dms-service-key
