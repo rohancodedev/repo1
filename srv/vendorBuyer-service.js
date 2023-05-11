@@ -67,15 +67,16 @@ module.exports = async function (srv) {
     console.log("#################################    sQuery    ::    " + sQuery);
 
     if (supplierIDCount1.length > 0) {
-      return ("Email ID " + rData.email + " is already registrated with Company Name " + decodeURI(rData.companyName));
-      req.reject(
-        409,
-        "Email ID " +
-        rData.email +
-        " is already registrated with Company Name " +
-        decodeURI(rData.companyName)
-      );
+      return ("Email ID ( " + rData.email + " ) is already registrated with Company Name ( " + decodeURI(rData.companyName) + " )");
     } else {
+      sQuery = "SELECT *  from COM_LTIM_VENDOR_BUYER_USERREGISTRATION where lower(EMAIL) = lower('" + rData.email + "')";
+      query = cds.parse.cql(sQuery);
+      var emailCount = await tx.run(sQuery);
+
+      if (emailCount.length > 0) {
+        return ("Email ID ( " + rData.email + " ) is already registrated with Company Name ( " + decodeURI(emailCount[0].COMPANYNAME) + " ), Use a different Email ID");
+      }
+
       let supplierIDCount = await tx.run(SELECT.from(userRegistration, ["MAX(supplierID) as supplierID"])),
         aiSmrId = parseInt(supplierIDCount[0].supplierID === null ? 0 : supplierIDCount[0].supplierID) + 1,
         oSupplierID = _pad(aiSmrId, 10),
@@ -147,17 +148,17 @@ module.exports = async function (srv) {
         console.log("2. <==== Submit Registration ====>  Workflow Instance Creation Completed");
 
         let oUserRegistrationInsert = [{
-            "ID": workFlowID,
-            "email": rData.email.toString().toLowerCase(),
-            "supplierID": oSupplierID,
-            "fName": decodeURI(rData.fName),
-            "lname": decodeURI(rData.lname),
-            "companyName": decodeURI(rData.companyName),
-            "status": "0",
-            "wStatus": "X",
-            "rLevel": "1",
-            "rWFID": oWorkFlowStatus.data.id,
-          }];
+          "ID": workFlowID,
+          "email": rData.email.toString().toLowerCase(),
+          "supplierID": oSupplierID,
+          "fName": decodeURI(rData.fName),
+          "lname": decodeURI(rData.lname),
+          "companyName": decodeURI(rData.companyName),
+          "status": "0",
+          "wStatus": "X",
+          "rLevel": "1",
+          "rWFID": oWorkFlowStatus.data.id,
+        }];
 
         console.log("3. <==== Submit Registration ====>  oWorkFlowStatus    ::    " + JSON.stringify(oWorkFlowStatus.data));
 
