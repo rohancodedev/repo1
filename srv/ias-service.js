@@ -61,13 +61,14 @@ async function getDestinationDetails(accessToken, destinationName) {
 }
 
 async function createUser(inputData, destinationDetails) {
-    var data = qs.stringify(inputData),
+    var token = destinationDetails.authTokens[0],
+        data = qs.stringify(inputData),
         config = {
             "method": "post",
             "url": destinationDetails.destinationConfiguration.URL + sEndpoint,
             "headers": {
                 "Content-Type": "application/x-www-form-urlencoded",
-                "Authorization": destinationDetails.authTokens[0].http_header.value
+                "Authorization": `${token.type} ${token.value}`
             },
             "data": data
         };
