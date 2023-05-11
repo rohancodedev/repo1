@@ -196,7 +196,7 @@ async function createRepo(inputData, token) {
             "url": urlString,
             "headers": {
                 "Content-Type": "application/json",
-                "Authorizat.ion": "Bearer " + token.access_token
+                "Authorization": "Bearer " + token.access_token
             },
             "data": data
         };
