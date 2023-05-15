@@ -1,8 +1,7 @@
-const axios = require('axios');
-const querystring = require('querystring');
-const FormData = require('form-data');
-
-const oVCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES),
+const axios = require('axios'),
+    querystring = require('querystring'),
+    FormData = require('form-data'),
+    oVCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES),
     sdmService = oVCAP_SERVICES.sdm[0].credentials,
     clientID = sdmService.uaa.clientid,
     uaaCredentials = clientID + ':' + sdmService.uaa.clientsecret,
@@ -12,6 +11,19 @@ const oVCAP_SERVICES = JSON.parse(process.env.VCAP_SERVICES),
     readRepoEndpoint = "browser";
 
 module.exports = async function (srv) {
+
+    srv.on("getUploadDocumentDetials", async (req) => {
+        var repoName = req.data.repoName,
+            folderName = req.data.folderName,
+            token = await getOAuthToken(),
+            repoCheck = await checkRepository(repoName),
+            repositoryId = repoCheck.response.repositoryId;
+
+        return {
+            "dmsUploadDocURL": repositoryId + "/root/" + folderName,
+            "token": token.access_token
+        }
+    });
 
     srv.on("createFolderInRepository", async (req) => {
         var inputData = req.data["input"];
