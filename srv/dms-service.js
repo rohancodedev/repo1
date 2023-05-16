@@ -145,20 +145,23 @@ async function checkFolderInRepository(repoName, folderName) {
         };
 
     var response = await axios(config),
-        isFolderExist = false;
+        isFolderExist = false,
+        folderObj = null;
 
     for (var ctr = 0; ctr < response.data.objects.length; ctr++) {
         var object = ((response.data.objects[ctr]).object).properties;
         for (var key in object) {
             if ((key === "cmis:name") && ((object[key]).value === folderName)) {
                 isFolderExist = true;
+                folderObj = object[key];
                 break;
             }
         }
     }
 
     return {
-        "isFolderExist": isFolderExist
+        "isFolderExist": isFolderExist,
+        "folderDetails" : folderObj
     }
 }
 
