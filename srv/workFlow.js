@@ -14,7 +14,7 @@ module.exports = class workFlow {
   constructor() { }
 
   async getOAuthToken() {
-    const response = await axios({
+    var response = await axios({
       "method": "POST",
       "responseType": 'json',
       "url": oAuthUrlString,
@@ -45,8 +45,20 @@ module.exports = class workFlow {
   }
 
   async tiggerWorkFlowInstance(inputData, destinationDetails) {
+    // var config = {
+    //   "method": "post",
+    //   "url": destinationDetails.destinationConfiguration.URL + sEndpoint,
+    //   "headers": {
+    //     "Content-Type": "application/json",
+    //     "Accept": "application/json",
+    //     "Authorization": destinationDetails.authTokens[0].http_header.value
+    //   },
+    //   "data": inputData
+    // };
+
     var config = {
-      "method": "post",
+      "method": "POST",
+      "responseType": 'json',
       "url": destinationDetails.destinationConfiguration.URL + sEndpoint,
       "headers": {
         "Content-Type": "application/json",
@@ -56,23 +68,26 @@ module.exports = class workFlow {
       "data": inputData
     };
 
-    return axios.request(config)
-      .then((response) => {
-        return {
-          "status": "SUCCESS",
-          "code": response.status,
-          "message": response.data,
-          "responseData": response
-        };
-      })
-      .catch((error) => {
-        return {
-          "status": "ERROR",
-          "code": error.response.status,
-          "message": error.response.data,
-          "responseData": error
-        };
-      });
+    var response = await axios(config);
+    return response.data;
+
+    // return axios.request(config)
+    //   .then((response) => {
+    //     return {
+    //       "status": "SUCCESS",
+    //       "code": response.status,
+    //       "message": response.data,
+    //       "responseData": response
+    //     };
+    //   })
+    //   .catch((error) => {
+    //     return {
+    //       "status": "ERROR",
+    //       "code": error.response.status,
+    //       "message": error.response.data,
+    //       "responseData": error
+    //     };
+    //   });
   }
 
   async startWorkflow(inputData) {
