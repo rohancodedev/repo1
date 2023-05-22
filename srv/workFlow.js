@@ -45,7 +45,7 @@ module.exports = class workFlow {
   }
 
   async tiggerWorkFlowInstance(inputData, destinationDetails) {
-    // var config = {
+    // var config = { 
     //   "method": "post",
     //   "url": destinationDetails.destinationConfiguration.URL + sEndpoint,
     //   "headers": {
