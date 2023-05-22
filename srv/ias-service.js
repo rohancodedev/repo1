@@ -22,8 +22,14 @@ module.exports = async function (srv) {
             destinationDetails = await getDestinationDetails(accessToken, sDestinationName),
             userResponse = await createUser(inputData, destinationDetails);
 
+        userResponse = JSON.parse(userResponse);
+
         return {
-            "userResponse": userResponse
+            "userResponse": {
+                "status": userResponse.status,
+                "code": userResponse.code,
+                "message": userResponse.message
+            }
         };
     });
 };
@@ -64,31 +70,48 @@ async function createUser(inputData, destinationDetails) {
     var token = destinationDetails.authTokens[0],
         data = qs.stringify(inputData),
         config = {
-            "method": "post",
             "url": destinationDetails.destinationConfiguration.URL + sEndpoint,
+            "method": "POST",
             "headers": {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": `${token.type} ${token.value}`
             },
+            "validateStatus": function (status) {
+                return (status < 500);
+            },
             "data": data
         };
 
-    return axios.request(config)
+    var message = "",
+        statusCode = "";
+
+    return await axios(config)
         .then((response) => {
-            return {
+            message = response.data;
+            statusCode = response.status;
+
+            if (statusCode === 409) {
+                message = message.substring(0, message.indexOf("[X") - 1);
+            } else if (statusCode === 400) {
+                message = "The user for whom you are trying to create an user is inactive";
+            } else if (statusCode === 201) {
+                message = "User Created Successfully";
+            }
+
+            return JSON.stringify({
                 "status": "SUCCESS",
-                "code": response.status,
-                "message": response.data,
-                "responseData": response
-            };
+                "code": statusCode,
+                "message": message
+            });
         })
         .catch((error) => {
-            return {
+            message = error.response.data;
+            statusCode = error.response.status;
+
+            return JSON.stringify({
                 "status": "ERROR",
-                "code": error.response.status,
-                "message": error.response.data,
-                "responseData": error
-            };
+                "code": statusCode,
+                "message": message
+            });
         });
 }
-
