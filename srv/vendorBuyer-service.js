@@ -64,7 +64,9 @@ module.exports = async function (srv) {
       query = cds.parse.cql(sQuery),
       supplierIDCount1 = await tx.run(sQuery);
 
-    console.log("#################################    sQuery    ::    " + sQuery);
+    console.log("<========== Submit Registration ==========> rData     ::      " + JSON.stringify(rData));
+
+    console.log("<========== Submit Registration ==========> sQuery    ::    " + sQuery + "      supplierIDCount1 :: " + supplierIDCount1.length);
 
     if (supplierIDCount1.length > 0) {
       return ("Email ID ( " + rData.email + " ) is already registrated with Company Name ( " + decodeURI(rData.companyName) + " )");
@@ -72,6 +74,9 @@ module.exports = async function (srv) {
       sQuery = "SELECT *  from COM_LTIM_VENDOR_BUYER_USERREGISTRATION where lower(EMAIL) = lower('" + rData.email + "')";
       query = cds.parse.cql(sQuery);
       var emailCount = await tx.run(sQuery);
+
+
+      console.log("<========== Submit Registration ==========> emailCount.length   ::    " + emailCount.length);
 
       if (emailCount.length > 0) {
         return ("Email ID ( " + rData.email + " ) is already registrated with Company Name ( " + decodeURI(emailCount[0].COMPANYNAME) + " ), Use a different Email ID");
@@ -96,6 +101,8 @@ module.exports = async function (srv) {
         workFlowID = gId(),
         sLevel = 1,
         oApproversList = lodash.sortBy(oApproversListRaw, ["Level"]);
+
+      console.log("<========== Submit Registration ==========> oApproversList.length     ::      " + oApproversList.length);
 
       if (oApproversList.length > 0) {
         oApproversList.forEach((v, i) => {
@@ -122,7 +129,7 @@ module.exports = async function (srv) {
           sLevel = sLevel + 1;
         });
 
-        console.log("1. <==== Submit Registration ====>  Starting Workflow");
+        console.log("<========== Submit Registration ==========>  Starting Workflow");
 
         var oData = {
           "definitionId": "supplierSM",
@@ -141,11 +148,16 @@ module.exports = async function (srv) {
             "initiator": rData.email,
             "parentWKFlowID": workFlowID,
             "isEditable": true,
-          },
+            "dmsRepositoryName": rData.dmsRepositoryName,
+            "dmsRepositoryId": rData.dmsRepositoryId,
+            "dmsRepositoryDescription": rData.dmsRepositoryDescription,
+            "dmsObjectID": rData.dmsObjectID,
+            "dmsFileName": rData.dmsFileName
+          }
         };
 
         let oWorkFlowStatus = await oWorkFlow.startWorkflow(oData);
-        console.log("2. <==== Submit Registration ====>  Workflow Instance Creation Completed");
+        console.log("<========== Submit Registration ==========>  Workflow Instance Creation Completed    " + JSON.stringify(oWorkFlowStatus));
 
         let oUserRegistrationInsert = [{
           "ID": workFlowID,
@@ -157,18 +169,16 @@ module.exports = async function (srv) {
           "status": "0",
           "wStatus": "X",
           "rLevel": "1",
-          "rWFID": oWorkFlowStatus.data.id,
+          "rWFID": oWorkFlowStatus.message.id
         }];
 
-        console.log("3. <==== Submit Registration ====>  oWorkFlowStatus    ::    " + JSON.stringify(oWorkFlowStatus.data));
-
-        if (oWorkFlowStatus.data.status === "RUNNING") {
-          console.log("4. <==== Submit Registration ====>  Inside IF Condition  ");
-          console.log("5. <==== Submit Registration ====>  AAAAAAAAAA");
+        if (oWorkFlowStatus.message.status === "RUNNING") {
+          console.log("<========== Submit Registration ==========>  Inside IF Condition  ");
+          console.log("<========== Submit Registration ==========>  AAAAAAAAAA");
           await tx.run(INSERT.into(SupplierWorkFlow).entries(oWorkFlowItems));
-          console.log("6. <==== Submit Registration ====>  BBBBBBBBBB");
+          console.log("<========== Submit Registration ==========>  BBBBBBBBBB");
           await tx.run(INSERT.into(userRegistration).entries(oUserRegistrationInsert));
-          console.log("7. <==== Submit Registration ====>  CCCCCCCCCC");
+          console.log("<========== Submit Registration ==========>  CCCCCCCCCC");
 
           await tx.run(
             INSERT.into(generalDetails).entries([
@@ -188,7 +198,7 @@ module.exports = async function (srv) {
             ])
           );
 
-          console.log("7. <==== Submit Registration ====>  DDDDDDDDDDDD");
+          console.log("<========== Submit Registration ==========>  DDDDDDDDDDDD");
 
           await tx.run(
             INSERT.into(companyProfile).entries([
@@ -199,7 +209,7 @@ module.exports = async function (srv) {
             ])
           );
 
-          console.log("8. <==== Submit Registration ====>  EEEEEEEEEEEEEEE");
+          console.log("<========== Submit Registration ==========>  EEEEEEEEEEEEEEE");
           let loginItemCatData = await tx.run(SELECT.from(loginItemCatagory, supLoginItems => {
             supLoginItems.productService,
               supLoginItems.itemCatagory01,
@@ -207,7 +217,7 @@ module.exports = async function (srv) {
           }).where({
             email: rData.email.toString().toLowerCase()
           }));
-          console.log("6. <==== Submit Registration ====>  FFFFFFFFFFFFF");
+          console.log("<========== Submit Registration ==========>  FFFFFFFFFFFFF");
           let record = {},
             supItemCategoryArray = [],
             itemCommonID = gId();
@@ -223,24 +233,25 @@ module.exports = async function (srv) {
             supItemCategoryArray.push(record)
           })
 
-          console.log("6. <==== Submit Registration ====>  GGGGGGGGGGGGGGG supItemCategoryArray.length  ::   " + supItemCategoryArray.length);
+          console.log("<========== Submit Registration ==========>  GGGGGGGGGGGGGGG supItemCategoryArray.length  ::   " + supItemCategoryArray.length);
           if (supItemCategoryArray.length > 0) {
             await tx.run(INSERT.into(supplierItemCatagory).entries(supItemCategoryArray))
           }
 
-          console.log("6. <==== Submit Registration ====>  HHHHHHHHHHHHHHHHHHH");
+          console.log("<========== Submit Registration ==========>  HHHHHHHHHHHHHHHHHHH");
 
           let sReturn =
-            "Thanks for Registrating with LTIMindtree. Your Reference ID: " +
-            oSupplierID +
-            ". Once all the Level of approval done you will get login access to your Registrated Email ID " +
-            rData.email +
-            ".";
+            "Thanks for Registrating with LTIMindtree. Your Reference ID: " + oSupplierID + 
+            ". Once all the Level of approval done you will get login access to your Registrated Email ID " + rData.email + ".";
+          
+            console.log("<========== Submit Registration ==========> sReturn  :: " + sReturn);
           return sReturn;
         } else {
+          console.log("<========== Submit Registration ==========> Failed in Trigging WorkFlow");
           return "Failed in Trigging WorkFlow";
         }
       } else {
+        console.log("<========== Submit Registration ==========>  No DoA is assigned to WorkFlow process");
         return "No DoA is assigned to WorkFlow process";
       }
     }

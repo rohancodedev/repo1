@@ -119,7 +119,7 @@ async function getRepo(token) {
             }
         };
 
-    console.log("<========== DMS-Service getRepo config ==========>  ::   " + JSON.stringify(config));
+    // console.log("<========== DMS-Service getRepo config ==========>  ::   " + JSON.stringify(config));
 
     var response = await axios(config);
     return response.data;
@@ -216,7 +216,7 @@ async function createRepo(inputData, token) {
             "data": data
         };
 
-    console.log("<========== DMS-Service createRepo config ==========>  ::   " + JSON.stringify(config));
+    // console.log("<========== DMS-Service createRepo config ==========>  ::   " + JSON.stringify(config));
 
     var response = await axios(config);
     return response.data;

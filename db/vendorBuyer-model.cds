@@ -4,7 +4,7 @@ using {
     managed,
     cuid
 } from '@sap/cds/common';
-using { com.ltim.vendor.buyer as ct } from '../db/approverTable-model';
+using {com.ltim.vendor.buyer as ct} from '../db/approverTable-model';
 
 
 type generic           : {
@@ -38,22 +38,27 @@ type generic           : {
 }
 
 type vendorBuyerSubmit : {
-    companyName         : String(150);
-    commercialLicNumber : String(20);
-    country             : String(3);
-    countryName         : String(45);
-    fName               : String(50);
-    lname               : String(50);
-    companyTelNoCode    : String(6);
-    companyTelNoNumber  : String(20);
-    email               : String(241);
-    website             : String(500);
-    productService      : String(150);
-    lineBusiness        : String(150);
-    lineBusiness02      : String(150);
-    lineBusinessID      : String(150);
-    remarks             : String(500);
-    attachments         : String(500);
+    companyName              : String(150);
+    commercialLicNumber      : String(20);
+    country                  : String(3);
+    countryName              : String(45);
+    fName                    : String(50);
+    lname                    : String(50);
+    companyTelNoCode         : String(6);
+    companyTelNoNumber       : String(20);
+    email                    : String(241);
+    website                  : String(500);
+    productService           : String(150);
+    lineBusiness             : String(150);
+    lineBusiness02           : String(150);
+    lineBusinessID           : String(150);
+    remarks                  : String(500);
+    attachments              : String(500);
+    dmsRepositoryName        : String(150);
+    dmsRepositoryId          : String(150);
+    dmsRepositoryDescription : String(150);
+    dmsObjectID              : String(150);
+    dmsFileName              : String(150);
 }
 
 type WorkFlowStatus    : String(1) enum {
@@ -104,113 +109,113 @@ entity loginItemCatagory : cuid, managed {
 // new code added by shankar starts here after call
 
 entity SupplierWorkFlow : managed {
-    wFID         : String(36); 
-    supplierID   : generic:supplierID; 
-    bu           : generic:bu; 
+    wFID         : String(36);
+    supplierID   : generic:supplierID;
+    bu           : generic:bu;
     Level        : Integer;
-    Status       : WorkFlowStatus; 
-    EmailID      : generic:email; 
-    Rule         : String(225); 
-    Remarks      : String(255); 
-    parentWFID   : String(36); 
-    workFlowType : String(36); 
+    Status       : WorkFlowStatus;
+    EmailID      : generic:email;
+    Rule         : String(225);
+    Remarks      : String(255);
+    parentWFID   : String(36);
+    workFlowType : String(36);
 }
 
 entity generalDetails : cuid, managed {
-    key version              : Integer default 0; 
-        s4Version            : Integer default 0; 
-        email                : generic:email; 
-        supplierID           : generic:supplierID; 
-        bu                   : generic:bu; 
-        floor                : String(50); 
-        companyName          : String(150); 
-        buildingNumber       : String(20); 
-        buildingName         : String(150); 
-        streetNo             : String(50); 
-        streetName           : String(200); 
-        nearestLandMark      : String(200); 
-        officeNo             : String(50); 
-        poBoxNo              : String(20); 
-        postOfficeAreaName   : String(20); 
-        cityTown             : generic:cityTown; 
-        country              : generic:country; 
+    key version              : Integer default 0;
+        s4Version            : Integer default 0;
+        email                : generic:email;
+        supplierID           : generic:supplierID;
+        bu                   : generic:bu;
+        floor                : String(50);
+        companyName          : String(150);
+        buildingNumber       : String(20);
+        buildingName         : String(150);
+        streetNo             : String(50);
+        streetName           : String(200);
+        nearestLandMark      : String(200);
+        officeNo             : String(50);
+        poBoxNo              : String(20);
+        postOfficeAreaName   : String(20);
+        cityTown             : generic:cityTown;
+        country              : generic:country;
         countryName          : generic:countryCodeName;
-        region               : String(80); 
-        pincode              : generic:pincode; 
+        region               : String(80);
+        pincode              : generic:pincode;
         companyTelNoCode     : generic:telCode;
         companyTelNoNumber   : generic:telNumber;
-        companyEmailID       : generic:email; 
-        website              : generic:website; 
-        faxCode              : generic:telCode; 
-        faxNumber            : generic:telNumber; 
-        cellCode             : generic:telCode; 
-        cellNumber           : generic:telNumber; 
-        dunsNumber           : String(11); 
-        legalStructure       : String(50); 
-        businessType         : String(50); 
-        lineOfBusiness       : generic:lineofBusiness; 
-        otherLineOfBusiness  : generic:lineofBusiness; 
-        establishmentYear    : generic:years; 
-        yearInBusiness       : String(15); 
-        csiCategory          : String(75); 
-        companyOverView      : generic:brief; 
-        visionStatement      : generic:brief; 
-        natureOfBusiness     : generic:brief; 
+        companyEmailID       : generic:email;
+        website              : generic:website;
+        faxCode              : generic:telCode;
+        faxNumber            : generic:telNumber;
+        cellCode             : generic:telCode;
+        cellNumber           : generic:telNumber;
+        dunsNumber           : String(11);
+        legalStructure       : String(50);
+        businessType         : String(50);
+        lineOfBusiness       : generic:lineofBusiness;
+        otherLineOfBusiness  : generic:lineofBusiness;
+        establishmentYear    : generic:years;
+        yearInBusiness       : String(15);
+        csiCategory          : String(75);
+        companyOverView      : generic:brief;
+        visionStatement      : generic:brief;
+        natureOfBusiness     : generic:brief;
         considerOrganization : generic:brief;
-        organizationMission  : generic:brief; 
+        organizationMission  : generic:brief;
         organizationChart    : generic:attachment;
         companyProfile       : generic:attachment;
-        permanentEmployees   : String(15); 
-        specify              : generic:yesno; 
-        remarks              : generic:brief; 
-        attachments          : generic:attachment; 
+        permanentEmployees   : String(15);
+        specify              : generic:yesno;
+        remarks              : generic:brief;
+        attachments          : generic:attachment;
 }
 
 entity companyProfile : cuid, managed {
     key version                      : Integer default 0;
-        s4Version                    : Integer default 0; 
-        email                        : generic:email; 
-        supplierID                   : generic:supplierID; 
-        bu                           : generic:bu; 
-        tradeLicNumber               : String(20); 
+        s4Version                    : Integer default 0;
+        email                        : generic:email;
+        supplierID                   : generic:supplierID;
+        bu                           : generic:bu;
+        tradeLicNumber               : String(20);
         tradeIssueDate               : generic:date;
-        tradeExpiryDate              : generic:date; 
-        tradeIssuingAuthority        : String(150); 
+        tradeExpiryDate              : generic:date;
+        tradeIssuingAuthority        : String(150);
         tradeIssuingCountry          : generic:country;
-        tradeAttachment              : generic:attachment; 
-        commercialLicNumber          : String(20); 
+        tradeAttachment              : generic:attachment;
+        commercialLicNumber          : String(20);
         commercialIssueDate          : generic:date;
-        commercialExpiryDate         : generic:date; 
-        commercialIssuingAuthority   : String(150); 
-        commercialIssuingCountry     : String(150); 
-        commercialAttachment         : generic:attachment; 
-        taxtype                      : String(25); 
-        taxnumber                    : String(25); 
-        taxIssueDate                 : generic:date; 
-        taxExpiryDate                : generic:date; 
+        commercialExpiryDate         : generic:date;
+        commercialIssuingAuthority   : String(150);
+        commercialIssuingCountry     : String(150);
+        commercialAttachment         : generic:attachment;
+        taxtype                      : String(25);
+        taxnumber                    : String(25);
+        taxIssueDate                 : generic:date;
+        taxExpiryDate                : generic:date;
         taxIssuingAuthority          : String(150);
-        taxIssuingCountry            : String(150); 
-        taxAttachment                : generic:attachment; 
-        computerCardnumber           : String(25); 
-        computerCardIssueDate        : generic:date; 
-        computerCardExpiryDate       : generic:date; 
-        computerCardIssuingAuthority : String(150); 
-        computerCardIssuingCountry   : String(150); 
-        computerCardAttachment       : generic:attachment; 
-        companyProfileAttachment     : generic:attachment; 
-        organizationAttachment       : generic:attachment; 
+        taxIssuingCountry            : String(150);
+        taxAttachment                : generic:attachment;
+        computerCardnumber           : String(25);
+        computerCardIssueDate        : generic:date;
+        computerCardExpiryDate       : generic:date;
+        computerCardIssuingAuthority : String(150);
+        computerCardIssuingCountry   : String(150);
+        computerCardAttachment       : generic:attachment;
+        companyProfileAttachment     : generic:attachment;
+        organizationAttachment       : generic:attachment;
 }
 
 entity supplierItemCatagory : cuid, managed {
-    key version          : Integer default 0;
-    	s4Version        : Integer default 0;
-    	itemID			 : String(36);
-        email            : generic:email; 
-        supplierID       : generic:supplierID; 
-		productService   : String(36);
-    	itemCatagory01   : String(200);
-    	itemCatagory02   : String(200);
-    	deleteFlag		 : Boolean default false;
+    key version        : Integer default 0;
+        s4Version      : Integer default 0;
+        itemID         : String(36);
+        email          : generic:email;
+        supplierID     : generic:supplierID;
+        productService : String(36);
+        itemCatagory01 : String(200);
+        itemCatagory02 : String(200);
+        deleteFlag     : Boolean default false;
 }
 
 define view approversList as

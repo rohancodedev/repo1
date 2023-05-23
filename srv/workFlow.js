@@ -45,49 +45,48 @@ module.exports = class workFlow {
   }
 
   async tiggerWorkFlowInstance(inputData, destinationDetails) {
-    // var config = { 
-    //   "method": "post",
-    //   "url": destinationDetails.destinationConfiguration.URL + sEndpoint,
-    //   "headers": {
-    //     "Content-Type": "application/json",
-    //     "Accept": "application/json",
-    //     "Authorization": destinationDetails.authTokens[0].http_header.value
-    //   },
-    //   "data": inputData
-    // };
-
     var config = {
       "method": "POST",
-      "responseType": 'json',
       "url": destinationDetails.destinationConfiguration.URL + sEndpoint,
       "headers": {
         "Content-Type": "application/json",
         "Accept": "application/json",
         "Authorization": destinationDetails.authTokens[0].http_header.value
       },
+      "validateStatus": function (status) {
+        return (status < 500);
+      },
       "data": inputData
     };
 
-    var response = await axios(config);
-    return response.data;
+    // var response = await axios(config);
+    // return response.data;
 
-    // return axios.request(config)
-    //   .then((response) => {
-    //     return {
-    //       "status": "SUCCESS",
-    //       "code": response.status,
-    //       "message": response.data,
-    //       "responseData": response
-    //     };
-    //   })
-    //   .catch((error) => {
-    //     return {
-    //       "status": "ERROR",
-    //       "code": error.response.status,
-    //       "message": error.response.data,
-    //       "responseData": error
-    //     };
-    //   });
+    var message = "",
+      statusCode = "";
+
+    return axios(config)
+      .then((response) => {
+        message = response.data;
+        statusCode = response.status;
+
+        return JSON.stringify({
+          "status": "SUCCESS",
+          "code": statusCode,
+          "message": message
+        });
+
+      })
+      .catch((error) => {
+        message = error.response.data;
+        statusCode = error.response.status;
+
+        return JSON.stringify({
+          "status": "ERROR",
+          "code": statusCode,
+          "message": message
+        });
+      });
   }
 
   async startWorkflow(inputData) {
@@ -95,21 +94,18 @@ module.exports = class workFlow {
       console.error("Please provide valid workflow context payload");
       return {
         "status": "ERROR",
-        "code": 999,
-        "message": "Please provide valid workflow context payload",
-        "responseData": {}
+        "code": 111,
+        "message": "Please provide valid workflow context payload"
       }
     }
 
-    try {
-      var token = await this.getOAuthToken(),
-        accessToken = token.access_token,
-        destinationDetails = await this.getDestinationDetails(accessToken, sDestinationName),
-        returnValue = await this.tiggerWorkFlowInstance(inputData, destinationDetails);
+    var token = await this.getOAuthToken(),
+      accessToken = token.access_token,
+      destinationDetails = await this.getDestinationDetails(accessToken, sDestinationName),
+      returnValue = await this.tiggerWorkFlowInstance(inputData, destinationDetails);
 
-      return returnValue.responseData;
-    } catch (error) {
-      console.error(error);
-    }
+    returnValue = JSON.parse(returnValue);
+
+    return returnValue;
   }
 };
