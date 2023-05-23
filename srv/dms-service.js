@@ -12,6 +12,46 @@ const axios = require('axios'),
 
 module.exports = async function (srv) {
 
+    srv.on("displayDocumentDetails", async (req) => {
+        var urlString = "",
+            dmsFileName = req.data.dmsFileName,
+            dmsObjectID = req.data.dmsObjectID,
+            dmsRepositoryDescription = req.data.dmsRepositoryDescription,
+            dmsRepositoryId = req.data.dmsRepositoryId,
+            dmsRepositoryName = req.data.dmsRepositoryName,
+            rootObjectID = await getRootObjectID(dmsRepositoryId);
+
+        // if (rootObjectID && rootObjectID.objects && rootObjectID.objects.length > 0) {
+        //     rootObjectID = rootObjectID.objects[0].object.properties["cmis:objectId"].value;
+        //     urlString = dmsRepositoryId + "/root?objectId=" + rootObjectID + "&cmisSelector=content&filename=" + dmsFileName;
+
+        //     return {
+        //         "dmsDocURL": urlString,
+        //         "token": token.access_token
+        //     }
+
+        // } else {
+        //     return {
+        //         "error": "Not A Valid Repository"
+        //     }
+        // }
+
+        if (rootObjectID) {
+            urlString = dmsRepositoryId + "/root?objectId=" + rootObjectID + "&cmisSelector=children&filter=cmis:name,cmis:objectId,cmis:path,cmis:parentId,cmis:baseTypeId,cmis:objectTypeId,cmis:contentStreamFileName,cmis:contentStreamMimeType,cmis:contentStreamLength&succinct=true&orderBy=cmis:creationDate desc,cmis:name asc";
+            var docObjectID = await getDocObjectID(urlString, dmsFileName),
+                token = await getOAuthToken();
+
+            return {
+                "dmsDocURL": dmsRepositoryId + "/root?objectId=" + docObjectID + "&cmisSelector=content&filename=" + dmsFileName,
+                "token": token.access_token
+            }
+        } else {
+            return {
+                "error": "Not A Valid Repository"
+            }
+        }
+    });
+
     srv.on("getUploadDocumentDetials", async (req) => {
         var repoName = req.data.repoName,
             folderName = req.data.folderName,
@@ -161,7 +201,7 @@ async function checkFolderInRepository(repoName, folderName) {
 
     return {
         "isFolderExist": isFolderExist,
-        "folderDetails" : folderObj
+        "folderDetails": folderObj
     }
 }
 
@@ -268,4 +308,54 @@ async function createFolderInRepository(inputData) {
 
     var response = await axios(config);
     return response.data;
+}
+
+async function getRootObjectID(dmsRepositoryId) {
+    var token = await getOAuthToken(),
+        urlString = sdmURL + readRepoEndpoint + "/" + dmsRepositoryId + "/root?cmisSelector=children&filter=cmis:name,cmis:objectId",
+        config = {
+            "method": "GET",
+            "url": urlString,
+            "headers": {
+                "Authorization": "Bearer " + token.access_token
+            }
+        };
+
+    var response = await axios(config);
+    // return response.data;
+
+    return response.data.objects[0].object.properties["cmis:objectId"].value;
+}
+
+async function getDocObjectID(urlString, dmsFileName) {
+    var token = await getOAuthToken(),
+        urlString = sdmURL + readRepoEndpoint + "/" + urlString,
+        config = {
+            "method": "GET",
+            "url": urlString,
+            "headers": {
+                "Authorization": "Bearer " + token.access_token
+            }
+        };
+
+    var tempObj = null,
+        response = await axios(config);
+
+    console.log("<DMS-Service ========== getDocObjectID ==========> response.data.objects.length :: " + response.data.objects.length);
+
+    for (var ctr = 0; ctr < response.data.objects.length; ctr++) {
+        var object = ((response.data.objects[ctr]).object).succinctProperties;
+        for (var key in object) {
+            if ((key === "cmis:name") && ((object[key]) === dmsFileName)) {
+                tempObj = object;
+                break;
+            }
+        }
+    }
+
+    if (tempObj) {
+        return tempObj["cmis:objectId"];
+    } else {
+        return "Not a Valid FileName"
+    }
 }
