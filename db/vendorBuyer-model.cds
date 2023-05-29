@@ -59,6 +59,10 @@ type vendorBuyerSubmit : {
     dmsRepositoryDescription : String(150);
     dmsObjectID              : String(150);
     dmsFileName              : String(150);
+    itemCatagory             : many {
+        itemCatagory01          : String(150);
+        itemCatagory02          : String(150);
+    }
 }
 
 type WorkFlowStatus    : String(1) enum {

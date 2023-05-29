@@ -8,7 +8,7 @@ using {
 entity country : managed {
     country : String(3);
     name    : String(150);
-    tele    : String(5);
+    tele    : String(25);
 }
 
 entity region : managed {
