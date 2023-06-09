@@ -90,6 +90,7 @@ module.exports = class workFlow {
   }
 
   async startWorkflow(inputData) {
+    console.log("******1325377 " + JSON.stringify(inputData));
     if (inputData === undefined) {
       console.error("Please provide valid workflow context payload");
       return {

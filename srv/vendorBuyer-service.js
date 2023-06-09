@@ -11,6 +11,7 @@ module.exports = async function (srv) {
     generalDetails,
     companyProfile,
     supplierItemCatagory,
+    status,
   } = cds.entities("com.ltim.vendor.buyer");
 
   function _pad(num, size) {
@@ -172,6 +173,16 @@ module.exports = async function (srv) {
           "rWFID": oWorkFlowStatus.message.id
         }];
 
+        // new code added by shankar starts here for status table
+
+        let oRegistrationStatus = [{
+          "email": rData.email.toString().toLowerCase(),
+          "supplierID": oSupplierID,
+          "regStatus": "Approved"
+        }];
+
+        // new code added by shankar ends here
+        
         if (oWorkFlowStatus.message.status === "RUNNING") {
           console.log("<========== Submit Registration ==========>  Inside IF Condition  ");
           console.log("<========== Submit Registration ==========>  AAAAAAAAAA");
@@ -179,6 +190,11 @@ module.exports = async function (srv) {
           console.log("<========== Submit Registration ==========>  BBBBBBBBBB");
           await tx.run(INSERT.into(userRegistration).entries(oUserRegistrationInsert));
           console.log("<========== Submit Registration ==========>  CCCCCCCCCC");
+
+          // new code added by shankar starts here for status table
+          await tx.run(INSERT.into(status).entries(oRegistrationStatus));
+          console.log("<========== Submit Registration ==========>  12345678");
+          // new code added by shankar ends here
 
           await tx.run(
             INSERT.into(generalDetails).entries([
