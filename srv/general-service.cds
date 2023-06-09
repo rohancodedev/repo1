@@ -5,7 +5,14 @@ using com.ltim.vendor.buyer as general from '../db/general-model';
 
 service generalService @(impl: './general-service.js') {
 
-    entity country           as projection on general.country;
-    entity region            as projection on general.region;
-    entity configDataList    as projection on general.configDataList;
+    entity region         as projection on general.region;
+    entity configDataList as projection on general.configDataList;
+
+    entity country        as
+        select from general.country{
+            country,
+            name,
+            tele
+        } order by name asc
+
 }
