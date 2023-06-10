@@ -20,40 +20,114 @@ module.exports = async function (srv) {
   }
 
   srv.on("addDeleteItemsCat", async (req) => {
-    let tx = cds.transaction(req),
-      sVersion = await tx.run(
-        SELECT.from(loginItemCatagory).where({
-          "email": req.data.email.toString().toLowerCase(),
-          "itemCatagory01": req.data.itemCat1,
-          "itemCatagory02": req.data.itemCat2,
-          "deleteFlag": false,
-        })
-      );
+    var finalInsertDeleteArray = [],
+      finalArray = [],
+      itemCategoryPayload = req.data.itemCategoryPayload,
+      supplierID = itemCategoryPayload.supplierID,
+      email = itemCategoryPayload.email.toString().toLowerCase(),
+      productService = itemCategoryPayload.productService,
+      status = itemCategoryPayload.status,
+      itemCatagoryArray = itemCategoryPayload.itemCatagoryArray,
+      tx = cds.transaction(req),
+      sVersion = null;
 
-    if (req.data.status === "add") {
-      if (sVersion.length === 0) {
-        await tx.run(
-          INSERT.into(loginItemCatagory).entries([{
-            "email": req.data.email.toString().toLowerCase(),
-            "itemCatagory01": req.data.itemCat1,
-            "itemCatagory02": req.data.itemCat2,
-            "productService": req.data.productService,
-          }])
-        );
-        return "Item Category added Successfully.";
+    itemCatagoryArray = JSON.parse(itemCatagoryArray);
+
+    for (var ctr = 0; ctr < itemCatagoryArray.length; ctr++) {
+      var itemCatagory01 = itemCatagoryArray[ctr].fieldValue,
+        itemCatagory02 = itemCatagoryArray[ctr].fieldValue2;
+
+      finalInsertDeleteArray.push({
+        "email": email,
+        "productService": productService,
+        "itemCatagory01": itemCatagory01,
+        "itemCatagory02": itemCatagory02
+      });
+    }
+
+    console.log("<========== VendorBuyer addDeleteItemsCat ==========>  finalInsertDeleteArray Completed Length   ::    " + finalInsertDeleteArray.length);
+
+    if (status === "add") {
+      for (var ctr = 0; ctr < finalInsertDeleteArray.length; ctr++) {
+        var itemCatagory01 = finalInsertDeleteArray[ctr].fieldValue,
+          itemCatagory02 = finalInsertDeleteArray[ctr].fieldValue2;
+
+        sVersion = await tx.run(SELECT.from(loginItemCatagory).where({
+          "email": email,
+          "itemCatagory01": itemCatagory01,
+          "itemCatagory02": itemCatagory02,
+          "deleteFlag": false,
+        }))
+
+        finalArray.push({
+          "email": email,
+          "supplierID": supplierID,
+          "status": status,
+          "productService": productService,
+          "sVersion": sVersion.length,
+          "itemCatagory01": itemCatagory01,
+          "itemCatagory02": itemCatagory02
+        })
+      }
+
+      var returnValue = [];
+      for (var ctr = 0; ctr < finalArray.length; ctr++) {
+        if (finalArray[ctr].sVersion.length > 0) {
+          returnValue.push({
+            "email": finalArray[ctr].email,
+            "supplierID": finalArray[ctr].supplierID,
+            "status": finalArray[ctr].status,
+            "productService": finalArray[ctr].productService,
+            "sVersion": finalArray[ctr].sVersion,
+            "itemCatagory01": finalArray[ctr].itemCatagory01,
+            "itemCatagory02": finalArray[ctr].itemCatagory02
+          })
+        }
+      }
+
+      console.log("<========== VendorBuyer addDeleteItemsCat ==========>  returnValue Completed");
+
+      if (returnValue.length > 0) {
+        finalInsertDeleteArray = [];
+        finalArray = [];
+
+        console.log("<========== VendorBuyer addDeleteItemsCat ==========>  ERROR - Selected Item Category is already available.");
+
+        return {
+          "status": "ERROR",
+          "message": "Selected Item Category is already available.",
+          "data": returnValue
+        }
       } else {
-        return "Selected Item Category is already available.";
+        await tx.run(INSERT.into(loginItemCatagory).entries(finalInsertDeleteArray));
+
+        console.log("<========== VendorBuyer addDeleteItemsCat ==========>  SUCCESS - Selected Item Categories added Successfully.");
+
+        return {
+          "status": "SUCCESS",
+          "message": "Selected Item Categories added Successfully."
+        }
       }
     } else {
-      await tx.run(
-        DELETE.from(loginItemCatagory).where({
-          "email": req.data.email.toString().toLowerCase(),
-          "itemCatagory01": req.data.itemCat1,
-          "itemCatagory02": req.data.itemCat2,
-          "productService": req.data.productService,
+
+      console.log("<========== VendorBuyer addDeleteItemsCat ==========>  In Else Condition Before Delete Statement");
+
+      for (var ctr = 0; ctr < finalInsertDeleteArray.length; ctr++) {
+        await tx.run(DELETE.from(loginItemCatagory).where({
+          "email": finalInsertDeleteArray[ctr].email.toString().toLowerCase(),
+          "itemCatagory01": finalInsertDeleteArray[ctr].itemCatagory01,
+          "itemCatagory02": finalInsertDeleteArray[ctr].itemCatagory02,
+          "productService": finalInsertDeleteArray[ctr].productService
         })
-      );
-      return "Selected Item Category has removed Successfully.";
+        );
+      }
+
+      console.log("<========== VendorBuyer addDeleteItemsCat ==========>  SUCCESS - Selected Item Categories Removed Successfully.");
+
+      return {
+        "status": "SUCCESS",
+        "message": "Selected Item Categories Removed Successfully."
+      }
     }
   });
 
@@ -182,7 +256,7 @@ module.exports = async function (srv) {
         }];
 
         // new code added by shankar ends here
-        
+
         if (oWorkFlowStatus.message.status === "RUNNING") {
           console.log("<========== Submit Registration ==========>  Inside IF Condition  ");
           console.log("<========== Submit Registration ==========>  AAAAAAAAAA");
@@ -257,10 +331,10 @@ module.exports = async function (srv) {
           console.log("<========== Submit Registration ==========>  HHHHHHHHHHHHHHHHHHH");
 
           let sReturn =
-            "Thanks for Registrating with LTIMindtree. Your Reference ID: " + oSupplierID + 
+            "Thanks for Registrating with LTIMindtree. Your Reference ID: " + oSupplierID +
             ". Once all the Level of approval done you will get login access to your Registrated Email ID " + rData.email + ".";
-          
-            console.log("<========== Submit Registration ==========> sReturn  :: " + sReturn);
+
+          console.log("<========== Submit Registration ==========> sReturn  :: " + sReturn);
           return sReturn;
         } else {
           console.log("<========== Submit Registration ==========> Failed in Trigging WorkFlow");

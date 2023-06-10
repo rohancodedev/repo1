@@ -34,7 +34,6 @@ type generic           : {
     version         : Integer;
     years           : String(4);
     brief           : String(500);
-
 }
 
 type vendorBuyerSubmit : {
