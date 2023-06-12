@@ -9,7 +9,6 @@ service vendorBuyerService @(impl: './vendorBuyer-service.js') {
     entity generalDetails    as projection on vb.generalDetails;
     entity companyProfile    as projection on vb.companyProfile;
     entity SupplierWorkFlow  as projection on vb.SupplierWorkFlow;
-    // entity loginItemCatagory as projection on vb.loginItemCatagory;
     entity userRegistration  as projection on vb.userRegistration;
 
 
@@ -29,7 +28,6 @@ service vendorBuyerService @(impl: './vendorBuyer-service.js') {
 
     @open
     type object {};
-
     type itemCategoryArrayType : {
         bu           : String(4);
         buName       : String(45);

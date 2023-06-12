@@ -34,8 +34,8 @@ module.exports = async function (srv) {
     itemCatagoryArray = JSON.parse(itemCatagoryArray);
 
     for (var ctr = 0; ctr < itemCatagoryArray.length; ctr++) {
-      var itemCatagory01 = itemCatagoryArray[ctr].fieldValue,
-        itemCatagory02 = itemCatagoryArray[ctr].fieldValue2;
+      var itemCatagory01 = (status === "add") ? itemCatagoryArray[ctr].fieldValue : itemCatagoryArray[ctr].itemCatagory01,
+        itemCatagory02 = (status === "add") ? itemCatagoryArray[ctr].fieldValue2 : itemCatagoryArray[ctr].itemCatagory02;
 
       finalInsertDeleteArray.push({
         "email": email,
@@ -113,13 +113,13 @@ module.exports = async function (srv) {
       console.log("<========== VendorBuyer addDeleteItemsCat ==========>  In Else Condition Before Delete Statement");
 
       for (var ctr = 0; ctr < finalInsertDeleteArray.length; ctr++) {
-        await tx.run(DELETE.from(loginItemCatagory).where({
-          "email": finalInsertDeleteArray[ctr].email.toString().toLowerCase(),
-          "itemCatagory01": finalInsertDeleteArray[ctr].itemCatagory01,
-          "itemCatagory02": finalInsertDeleteArray[ctr].itemCatagory02,
-          "productService": finalInsertDeleteArray[ctr].productService
-        })
-        );
+        var deleteStatement = "DELETE FROM COM_LTIM_VENDOR_BUYER_LOGINITEMCATAGORY WHERE email = '" + finalInsertDeleteArray[ctr].email.toString().toLowerCase() + 
+        "' and itemCatagory01 = '" + finalInsertDeleteArray[ctr].itemCatagory01 + "' and itemCatagory02 = '" + finalInsertDeleteArray[ctr].itemCatagory02 + 
+        "' and productService = '" + finalInsertDeleteArray[ctr].productService + "'";
+
+        // console.log("<==========> CTR ::  " + ctr + "       " + deleteStatement);
+
+        await tx.run (deleteStatement);
       }
 
       console.log("<========== VendorBuyer addDeleteItemsCat ==========>  SUCCESS - Selected Item Categories Removed Successfully.");
