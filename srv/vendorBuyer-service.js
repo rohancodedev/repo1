@@ -10,8 +10,15 @@ module.exports = async function (srv) {
     SupplierWorkFlow,
     generalDetails,
     companyProfile,
+    foreignDetails,
+    financialDetails,
+    bankDetails,
+    businessPartner,
+    communication,
+    supplierChain,
+    certification,
     supplierItemCatagory,
-    status,
+    statusReg,
   } = cds.entities("com.ltim.vendor.buyer");
 
   function _pad(num, size) {
@@ -113,13 +120,13 @@ module.exports = async function (srv) {
       console.log("<========== VendorBuyer addDeleteItemsCat ==========>  In Else Condition Before Delete Statement");
 
       for (var ctr = 0; ctr < finalInsertDeleteArray.length; ctr++) {
-        var deleteStatement = "DELETE FROM COM_LTIM_VENDOR_BUYER_LOGINITEMCATAGORY WHERE email = '" + finalInsertDeleteArray[ctr].email.toString().toLowerCase() + 
-        "' and itemCatagory01 = '" + finalInsertDeleteArray[ctr].itemCatagory01 + "' and itemCatagory02 = '" + finalInsertDeleteArray[ctr].itemCatagory02 + 
-        "' and productService = '" + finalInsertDeleteArray[ctr].productService + "'";
+        var deleteStatement = "DELETE FROM COM_LTIM_VENDOR_BUYER_LOGINITEMCATAGORY WHERE email = '" + finalInsertDeleteArray[ctr].email.toString().toLowerCase() +
+          "' and itemCatagory01 = '" + finalInsertDeleteArray[ctr].itemCatagory01 + "' and itemCatagory02 = '" + finalInsertDeleteArray[ctr].itemCatagory02 +
+          "' and productService = '" + finalInsertDeleteArray[ctr].productService + "'";
 
         // console.log("<==========> CTR ::  " + ctr + "       " + deleteStatement);
 
-        await tx.run (deleteStatement);
+        await tx.run(deleteStatement);
       }
 
       console.log("<========== VendorBuyer addDeleteItemsCat ==========>  SUCCESS - Selected Item Categories Removed Successfully.");
@@ -252,7 +259,8 @@ module.exports = async function (srv) {
         let oRegistrationStatus = [{
           "email": rData.email.toString().toLowerCase(),
           "supplierID": oSupplierID,
-          "regStatus": "Approved"
+          "regStatus": "Approved",
+          "questionnaireStatus": "In Progress"
         }];
 
         // new code added by shankar ends here
@@ -266,7 +274,7 @@ module.exports = async function (srv) {
           console.log("<========== Submit Registration ==========>  CCCCCCCCCC");
 
           // new code added by shankar starts here for status table
-          await tx.run(INSERT.into(status).entries(oRegistrationStatus));
+          await tx.run(INSERT.into(statusReg).entries(oRegistrationStatus));
           console.log("<========== Submit Registration ==========>  12345678");
           // new code added by shankar ends here
 
@@ -283,7 +291,7 @@ module.exports = async function (srv) {
                 "companyEmailID": rData.email.toString().toLowerCase(),
                 "website": rData.website,
                 "remarks": rData.remarks,
-                "attachments": rData.attachments,
+                "attachments": rData.attachments
               },
             ])
           );
@@ -295,11 +303,58 @@ module.exports = async function (srv) {
               {
                 "supplierID": oSupplierID,
                 "commercialLicNumber": rData.commercialLicNumber,
+                "email": rData.email.toString().toLowerCase()
               },
             ])
           );
 
           console.log("<========== Submit Registration ==========>  EEEEEEEEEEEEEEE");
+
+          await tx.run(
+            INSERT.into(foreignDetails).entries([
+              {
+                "supplierID": oSupplierID,
+                "email": rData.email.toString().toLowerCase()
+              },
+            ])
+          );
+
+          console.log("<======== Submit Registration ==========> Foreign Details");
+
+          await tx.run(
+            INSERT.into(financialDetails).entries([
+              {
+                "supplierID": oSupplierID,
+                "email": rData.email.toString().toLowerCase()
+              },
+            ])
+          );
+
+          console.log("<========= Submit Registration =========> Financial Details");
+
+          await tx.run(
+            INSERT.into(businessPartner).entries([
+              {
+                "supplierID": oSupplierID,
+                "email": rData.email.toString().toLowerCase()
+              },
+            ])
+          );
+
+          console.log("<========= Submit Registration =========> Bussiness Partner");
+
+          await tx.run(
+            INSERT.into(supplierChain).entries([
+              {
+                "supplierID": oSupplierID,
+                "email": rData.email.toString().toLowerCase()
+              },
+            ])
+          );
+
+          console.log("<========= Submit Registration =========> Supplier Chain");
+
+
           let loginItemCatData = await tx.run(SELECT.from(loginItemCatagory, supLoginItems => {
             supLoginItems.productService,
               supLoginItems.itemCatagory01,
@@ -364,6 +419,94 @@ module.exports = async function (srv) {
         "Supplier has been Approved Successfully. Kindly check you registrated email.";
     } else if (oSupplier[0].rStatus === "Z") {
       oReturn = "Approval has been Reject.";
+    }
+    return oReturn;
+  });
+
+  srv.on("getSaveAsDraftStatus", async (req) => {
+    let tx = cds.transaction(req);
+
+    console.log("Get Save As Draft   : " + req.data);
+    let oGeneralDetails = await tx.run(
+      SELECT.from(generalDetails).where({
+        email: req.data.email.toString().toLowerCase(),
+        saveAsDraftStatus: req.data.saveAsDraftStatus
+      })
+    );
+    console.log(oGeneralDetails);
+    let oCompanyProfile = await tx.run(
+      SELECT.from(companyProfile).where({
+        email: req.data.email.toString().toLowerCase(),
+        saveAsDraftStatus: req.data.saveAsDraftStatus
+      })
+    );
+    console.log(oCompanyProfile);
+    let oForeginDetails = await tx.run(
+      SELECT.from(foreignDetails).where({
+        email: req.data.email.toString().toLowerCase(),
+        saveAsDraftStatus: req.data.saveAsDraftStatus
+      })
+    );
+    console.log(oForeginDetails);
+    let oFinancialDetails = await tx.run(
+      SELECT.from(financialDetails).where({
+        email: req.data.email.toString().toLowerCase(),
+        saveAsDraftStatus: req.data.saveAsDraftStatus
+      })
+    );
+    console.log(oFinancialDetails);
+    let oBankDetails = await tx.run(
+      SELECT.from(bankDetails).where({
+        email: req.data.email.toString().toLowerCase(),
+        saveAsDraftStatus: req.data.saveAsDraftStatus
+      })
+    );
+    console.log(oBankDetails);
+    let oBusinessPartner = await tx.run(
+      SELECT.from(businessPartner).where({
+        email: req.data.email.toString().toLowerCase(),
+        saveAsDraftStatus: req.data.saveAsDraftStatus
+      })
+    );
+    console.log(oBusinessPartner);
+    let oCommunication = await tx.run(
+      SELECT.from(communication).where({
+        email: req.data.email.toString().toLowerCase(),
+        saveAsDraftStatus: req.data.saveAsDraftStatus
+      })
+    );
+    console.log(oCommunication);
+    let oSupplierChain = await tx.run(
+      SELECT.from(supplierChain).where({
+        email: req.data.email.toString().toLowerCase(),
+        saveAsDraftStatus: req.data.saveAsDraftStatus
+      })
+    );
+    console.log(oSupplierChain);
+    let oCertification = await tx.run(
+      SELECT.from(certification).where({
+        email: req.data.email.toString().toLowerCase(),
+        saveAsDraftStatus: req.data.saveAsDraftStatus
+      })
+    );
+    console.log(oCertification);
+
+    let oReturn = "";
+
+    if (oGeneralDetails && oGeneralDetails.length > 0 && (oGeneralDetails[0].saveAsDraftStatus === false)) {
+      oReturn = "Please save General Details."
+    } else if (oCompanyProfile && oCompanyProfile.length > 0 && (oCompanyProfile[0].saveAsDraftStatus === false)) {
+      oReturn = "Please save Company Profile Details";
+    } else if (oForeginDetails && oForeginDetails.length > 0 && (oForeginDetails[0].saveAsDraftStatus === false)) {
+      oReturn = "Please save Foregin Details";
+    } else if (oFinancialDetails && oFinancialDetails.length > 0 && (oFinancialDetails[0].saveAsDraftStatus === false)) {
+      oReturn = "Please save Financial Details";
+    } else if (oBusinessPartner && oBusinessPartner.length > 0 && (oBusinessPartner[0].saveAsDraftStatus === false)) {
+      oReturn = "Please save Business Partner Details";
+    } else if (oSupplierChain && oSupplierChain.length > 0 && (oSupplierChain[0].saveAsDraftStatus === false)) {
+      oReturn = "Please save Foregin Details";
+    } else {
+      oReturn = "";
     }
     return oReturn;
   });

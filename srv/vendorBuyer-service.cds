@@ -10,12 +10,22 @@ service vendorBuyerService @(impl: './vendorBuyer-service.js') {
     entity companyProfile    as projection on vb.companyProfile;
     entity SupplierWorkFlow  as projection on vb.SupplierWorkFlow;
     entity userRegistration  as projection on vb.userRegistration;
-
+    entity foreignDetails    as projection on vb.foreignDetails;
+    entity financialDetails  as projection on vb.financialDetails;
+    entity bankDetails       as projection on vb.bankDetails;
+    entity businessPartner   as projection on vb.businessPartner;
+    entity communication     as projection on vb.communication;
+    entity supplierChain     as projection on vb.supplierChain;
+    entity warehouseList     as projection on vb.warehouseList;
+    entity fleetList         as projection on vb.fleetList;
+    entity certification     as projection on vb.certification;
+    //added by shankar on 31/07/23
+    entity attachments       as projection on vb.attachments;
+    entity headerRFHS        as projection on vb.headerRFHS;
+    entity itemRFHS          as projection on vb.itemRFHS;
 
     entity loginItemCatagory as
         select from vb.loginItemCatagory {
-            version,
-            s4Version,
             email,
             supplierID,
             productService,
@@ -28,6 +38,7 @@ service vendorBuyerService @(impl: './vendorBuyer-service.js') {
 
     @open
     type object {};
+
     type itemCategoryArrayType : {
         bu           : String(4);
         buName       : String(45);
@@ -52,4 +63,5 @@ service vendorBuyerService @(impl: './vendorBuyer-service.js') {
     action   submitRegistration(payLoad : vb.vendorBuyerSubmit)                                returns String;
     action   addDeleteItemsCat(itemCategoryPayload : addDeleteItemCatagory)                    returns object;
     function checkSupplierStatus(email : vb.generic:email, supplierID : vb.generic:supplierID) returns String;
+    function getSaveAsDraftStatus(email : vb.generic:email, saveAsDraftStatus : Boolean)       returns String;
 }

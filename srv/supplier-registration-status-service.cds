@@ -8,7 +8,9 @@ service supplierRegistrationStatus @(impl: './supplier-registration-status.js') 
     @open
     type object {};
 
-    entity status as projection on suppStatus.status;
-    function supplierStatus(email : String(241)) returns object;
+
+    entity statusReg as projection on suppStatus.statusReg;
+    function supplierStatus(email : String(241))                                      returns object;
+    function businessPartnerNumber(BusinessPartner : String(15), email : String(241)) returns String;
 
 }

@@ -29,3 +29,21 @@ entity configDataList : managed {
     deleteFlag   : Boolean default false;
     status       : String(1) default 'X';
 }
+
+// new code added by shankar for tax and currency
+
+entity currency : managed {
+    country : String(3);
+    name    : String(10);
+}
+
+entity tax : managed {
+    tax  : String(4);
+    name : String(150);
+}
+
+entity questionnaireDropdown : managed {
+    legalStructureOfCompany : String(200);
+    lineOfBusiness          : String(200);
+    bu                      : String(200);
+}

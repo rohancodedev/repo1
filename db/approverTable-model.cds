@@ -46,3 +46,8 @@ entity actorTypeApprover : managed {
         actorTypeDescription : String(500);
 }
 
+entity documentRespository {
+    key documentModule : String(100);
+        documentAPIID  : String(500);
+}
+

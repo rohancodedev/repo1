@@ -27,7 +27,7 @@
     "start": "npx cds run"
   },
   "engines": {
-    "node": "^14.x"
+    "node": "^16.19.1"
   },
   "cds": {
     "build": {
@@ -40,6 +40,11 @@
           "for": "node-cf"
         }
       ]
+    },
+    "env": {
+      "odata":{
+        "protectMetadata": false
+      }
     },
     "requires": {
       "uaa": {
