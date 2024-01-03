@@ -5,6 +5,6 @@ using {com.ltim.vendor.buyer as vb} from '../db/vendorBuyer-model';
 
 service MyService {
 
-    
+    check
 
 }
